@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "353416739688",
+    "firebase_url": "https://now-diary.firebaseio.com",
+    "project_id": "now-diary",
+    "storage_bucket": "now-diary.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353416739688:android:68e180fc85199c2e0e34dd",
+        "android_client_info": {
+          "package_name": "com.example.nowdiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353416739688-csbte4lvs795o0e0br76do14g2lm5mqc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMVZ2mW_RDGDA6LEXLiRt7xoxTAIk5o_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "353416739688-csbte4lvs795o0e0br76do14g2lm5mqc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

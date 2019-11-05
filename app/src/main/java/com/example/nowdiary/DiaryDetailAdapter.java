@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nowdiary.Model.DiaryDetail;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,9 +47,9 @@ public class DiaryDetailAdapter extends RecyclerView.Adapter<DiaryDetailAdapter.
         holder.background.getBackground().clearColorFilter();
         int color = myListData.getColor();
         holder.background.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        holder.tv_time.setText(String.valueOf(myListData.getTime()));
+        holder.tv_time.setText(getTimeToShow(myListData.getDateCreate()));
         holder.tv_miniContent.setText(myListData.getContent());
-        holder.tv_dateCount.setText(myListData.getDateCount()+"");
+        holder.tv_dateCount.setText(DiaryDetail.countDate(myListData.getDateCreate()));
 //        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
 ////            @Override
 ////            public void onClick(View view) {
@@ -61,6 +63,19 @@ public class DiaryDetailAdapter extends RecyclerView.Adapter<DiaryDetailAdapter.
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    private String getTimeToShow(Date date) {
+        String time = "";
+        Calendar itemCal = Calendar.getInstance();
+        itemCal.setTime(date);
+        time += itemCal.get(Calendar.HOUR) + ":" + itemCal.get(Calendar.MINUTE);
+        if (itemCal.get(Calendar.AM_PM) == Calendar.AM) {
+            time += "\nA.M";
+        } else {
+            time += "\nP.M";
+        }
+        return time;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

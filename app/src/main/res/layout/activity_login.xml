@@ -7,7 +7,6 @@
         android:id="@+id/diary_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginLeft="75dp"
         android:layout_marginTop="100dp"
         android:src="@drawable/diary"></ImageView>
@@ -67,13 +66,15 @@
     android:layout_centerHorizontal="true"
     android:layout_marginLeft="100dp"
     android:layout_marginTop="23dp"
-    android:layout_below="@+id/google_signin_password"
+    android:layout_below="@+id/google_signin_password" android:background="@drawable/button_background"
+
         >
     <ImageView
         android:layout_marginTop="10dp"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginBottom="7dp"
         android:src="@drawable/ic_firebase"/>
     <Button
         android:id="@+id/btnSignIn"
@@ -82,8 +83,11 @@
         android:textSize="10dp"
         android:text="Sign in with Firebase account"
         android:layout_marginLeft="20dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginRight="5dp"
         android:background="#FFFFFF"
         />
+
 </LinearLayout>
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btnSignInGG"
@@ -93,5 +97,15 @@
         android:layout_marginLeft="100dp"
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnRegister"
+        android:text="New Account"
+        android:textSize="10dp"
+        android:background="@drawable/button_background"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         />
 </RelativeLayout>

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.nowdiary.Model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -24,13 +25,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.common.SignInButton;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity  {
     private EditText mEditEmail, mEditPassword;
     private SignInButton btnSigninGG;
-    private Button btnSignin;
+    private Button btnSignin,btnRegister;
     private FirebaseAuth auth;
     private ProgressDialog myProgress;
     private DatabaseReference dbReference;
@@ -46,6 +53,7 @@ public class LoginActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_login);
         btnSignin = findViewById(R.id.btnSignIn);
         btnSigninGG = findViewById(R.id.btnSignInGG);
+        btnRegister = findViewById(R.id.btnRegister);
         mEditEmail = (EditText)findViewById(R.id.mEdit_Email);
         mEditPassword = (EditText)findViewById(R.id.mEdit_Password);
         auth = FirebaseAuth.getInstance();
@@ -62,19 +70,33 @@ public class LoginActivity extends AppCompatActivity  {
     protected void onStart() {
         super.onStart();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        //firebaseAuthWithGoogle(account);
+        if(account != null) {
+            firebaseAuthWithGoogle(account);
+        }
     }
 
     public void setEvent() {
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
         btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myProgress = new ProgressDialog(LoginActivity.this);
-                myProgress.setTitle("Authenticatiing");
-                myProgress.setMessage("Please wait...");
-                myProgress.setCancelable(true);
-                myProgress.show();
-                signInWithFirebaseViaAccount(view);
+                if(!mEditEmail.getText().toString().equals("") && !mEditPassword.getText().toString().equals("")) {
+                    myProgress = new ProgressDialog(LoginActivity.this);
+                    myProgress.setTitle("Authenticatiing");
+                    myProgress.setMessage("Please wait...");
+                    myProgress.setCancelable(true);
+                    myProgress.show();
+                    signInWithFirebaseViaAccount(view);
+                } else {
+                    Toast.makeText(LoginActivity.this,"Please fill in all the fields",Toast.LENGTH_LONG).show();
+                }
+
             }
         });
         btnSigninGG.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +164,31 @@ public class LoginActivity extends AppCompatActivity  {
                         // [END_EXCLUDE]
                     }
                 });
+    }
+    public void function1() {
+        FirebaseDatabase.getInstance().getReference().child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+//                            dbReference.child(userId).setValue(1)
+//                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<Void> task) {
+//                                            if(task.isSuccessful()) {
+//
+//                                            }
+//                                        }
+//                                    });
+                    User user = new User();
+                    user.setUsername("User " + userId);
+                    FirebaseDatabase.getInstance().getReference().child(userId).child("Information").setValue(user);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

@@ -17,36 +17,26 @@ public class DiaryDetail implements Serializable {
     }
 
     private String id;
-    private MyTime time;
-    private int dateCount;
     private int color;
     private String content;
+    private Date dateCreate;
+
+    public Date getDateCreate() {
+        return dateCreate;
+    }
+
+    public void setDateCreate(Date dateCreate) {
+        this.dateCreate = dateCreate;
+    }
 
     public DiaryDetail() {
     }
 
-    public DiaryDetail(String id, MyTime time, int dateCount, int color, String content) {
+    public DiaryDetail(String id, Date dateCreate, int color, String content) {
         this.id = id;
-        this.time = time;
-        this.dateCount = dateCount;
+        this.dateCreate = dateCreate;
         this.color = color;
         this.content = content;
-    }
-
-    public String getTime() {
-        return time.getHour() + " " + time.getMinute();
-    }
-
-    public void setTime(MyTime time) {
-        this.time = time;
-    }
-
-    public int getDateCount() {
-        return dateCount;
-    }
-
-    public void setDateCount(int dateCount) {
-        this.dateCount = dateCount;
     }
 
     public int getColor() {
@@ -65,15 +55,33 @@ public class DiaryDetail implements Serializable {
         this.content = content;
     }
 
-    public static int countDate(Date d1) {
-        Date today = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String[] date = formatter.format(today).split(" ");
-        Calendar c1 = Calendar.getInstance();
-        c1.set(Calendar.YEAR,Integer.parseInt(date[0].split("-")[2]));
-        c1.set(Calendar.MONTH,Integer.parseInt(date[0].split("-")[1]));
-        c1.set(Calendar.DATE,Integer.parseInt(date[0].split("-")[0]));
-        Date d2 = c1.getTime();
-        return ((int)d1.getTime() - (int)d2.getTime())/(1000*3600*24);
+    public static String countDate(Date date) {
+        String[] month = {"January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December"};
+        Calendar currentCal = Calendar.getInstance();
+        String datediff = "";
+        Calendar itemCal = Calendar.getInstance();
+        itemCal.set(Calendar.HOUR_OF_DAY, 1);
+        itemCal.set(Calendar.MINUTE, 1);
+        itemCal.set(Calendar.SECOND, 1);
+        Date currentDate = itemCal.getTime();
+        itemCal.setTime(date);
+        itemCal.set(Calendar.HOUR_OF_DAY, 1);
+        itemCal.set(Calendar.MINUTE, 1);
+        itemCal.set(Calendar.SECOND, 1);
+        Date thatdate = itemCal.getTime();
+        long timediff = currentDate.getTime() - thatdate.getTime();
+        float daydiff = Math.round(((float) timediff / (1000 * 60 * 60 * 24)) * 10) / 10;
+        if (daydiff == 0.0) {
+            datediff += "Today";
+        } else if (daydiff > 0 && daydiff < 7) {
+            datediff += (int) Math.ceil(daydiff) + " days ago";
+        } else {
+            datediff += month[itemCal.get(Calendar.MONTH)] + " " + itemCal.get(Calendar.DATE);
+            if (!(currentCal.get(Calendar.YEAR) == itemCal.get(Calendar.YEAR))) {
+                datediff += " " + itemCal.get(Calendar.YEAR);
+            }
+        }
+        return datediff;
     }
 }

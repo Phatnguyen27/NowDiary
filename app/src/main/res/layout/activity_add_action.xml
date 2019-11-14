@@ -122,4 +122,25 @@
             />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/history_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/color_view"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="2dp"
+        android:text="History of edition"
+        android:textSize="17dp"></TextView>
+
+    <ListView
+        android:id="@+id/history_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/history_label"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp">
+
+    </ListView>
+
 </RelativeLayout>

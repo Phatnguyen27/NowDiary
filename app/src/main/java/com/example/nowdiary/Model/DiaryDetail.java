@@ -3,6 +3,7 @@ package com.example.nowdiary.Model;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.SimpleFormatter;
@@ -17,9 +18,19 @@ public class DiaryDetail implements Serializable {
     }
 
     private String id;
+
+    public ArrayList<HistoryDetail> getHistory() {
+        return history;
+    }
+
+    public void setHistory(ArrayList<HistoryDetail> history) {
+        this.history = history;
+    }
+
     private int color;
     private String content;
     private Date dateCreate;
+    private ArrayList<HistoryDetail> history;
 
     public Date getDateCreate() {
         return dateCreate;
@@ -37,6 +48,11 @@ public class DiaryDetail implements Serializable {
         this.dateCreate = dateCreate;
         this.color = color;
         this.content = content;
+        this.history = new ArrayList<HistoryDetail>();
+    }
+
+    public void addHistory(HistoryDetail hd) {
+        this.history.add(hd);
     }
 
     public int getColor() {

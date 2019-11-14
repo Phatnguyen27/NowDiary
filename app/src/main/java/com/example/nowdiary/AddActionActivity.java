@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -23,6 +24,8 @@ import java.util.Date;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nowdiary.Model.DiaryDetail;
+import com.example.nowdiary.Model.HistoryDetail;
+import com.google.firebase.database.FirebaseDatabase;
 
 import petrov.kristiyan.colorpicker.ColorPicker;
 
@@ -35,12 +38,17 @@ public class AddActionActivity extends AppCompatActivity {
     private DiaryDetail editDiary;
     private TextView colorDetail;
     private int command;
+    private ArrayList<HistoryDetail> history = new ArrayList<HistoryDetail>();
+    private HistoryDetailAdapter adapter;
+    private ListView mListviewHistory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_action);
         setEvent();
         Intent intent = getIntent();
+        boolean signal = false;
         if(intent != null) {
             command = intent.getIntExtra("requestCode",0);
             Bundle bundle = intent.getBundleExtra("request");
@@ -57,11 +65,34 @@ public class AddActionActivity extends AppCompatActivity {
                 mMonth = calendar.get(Calendar.MONTH);
                 mDay = calendar.get(Calendar.DAY_OF_MONTH);
                 mColor = editDiary.getColor();
+                history = editDiary.getHistory();
+                signal = true;
             }
         }
+        setHistoryAdapter();
+        dataInit(signal);
+    }
+
+    public void dataInit(boolean signal) {
+        Date date = new Date();
+        if(signal)
+            date = editDiary.getDateCreate();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
+    }
+
+    protected void setHistoryAdapter() {
+        adapter = new HistoryDetailAdapter(this,R.layout.history_detail_component,history);
+        mListviewHistory.setAdapter(adapter);
     }
 
     protected void setEvent() {
+        mListviewHistory = findViewById(R.id.history_listview);
         colorDetail = findViewById(R.id.color_view_detail);
         colorDetail.setText("                      ");
         datePickerButton = findViewById(R.id.btn_date_picker);
@@ -125,6 +156,7 @@ public class AddActionActivity extends AppCompatActivity {
                         c1.set(Calendar.HOUR_OF_DAY,mHour);
                         c1.set(Calendar.MINUTE,mMinute);
                         Date d1 = c1.getTime();
+                        diary.setHistory(new ArrayList<HistoryDetail>());
                         diary.setDateCreate(d1);
                         bundle.putSerializable("diary",diary);
                         intent.putExtra("response",bundle);
@@ -132,16 +164,13 @@ public class AddActionActivity extends AppCompatActivity {
                         finish();
                     }break;
                     case MainActivity.REQUEST_CODE_EDIT: {
+                        HistoryDetail history = new HistoryDetail();
+                        history.setContent(editDiary.getContent());
+                        Date date = new Date();
+                        history.setDateEditted(date);
                         editDiary.setContent(mEditContent.getText().toString());
                         editDiary.setColor(mColor);
-                        Calendar c1 = Calendar.getInstance();
-                        c1.set(Calendar.YEAR,mYear);
-                        c1.set(Calendar.MONTH,mMonth);
-                        c1.set(Calendar.DAY_OF_MONTH,mDay);
-                        c1.set(Calendar.HOUR_OF_DAY,mHour);
-                        c1.set(Calendar.MINUTE,mMinute);
-                        Date d1 = c1.getTime();
-                        editDiary.setDateCreate(d1);
+                        editDiary.addHistory(history);
                         bundle.putSerializable("diary",editDiary);
                         intent.putExtra("command",command);
                         intent.putExtra("package",bundle);
@@ -149,7 +178,6 @@ public class AddActionActivity extends AppCompatActivity {
                         finish();
                     }
                 }
-
             }
         });
 
@@ -157,11 +185,6 @@ public class AddActionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    final Calendar c = Calendar.getInstance();
-                    c.setTime(editDiary.getDateCreate());
-                    mYear = c.get(Calendar.YEAR);
-                    mMonth = c.get(Calendar.MONTH);
-                    mDay = c.get(Calendar.DAY_OF_MONTH);
                     DatePickerDialog datePickerDialog = new DatePickerDialog(AddActionActivity.this,
                             new DatePickerDialog.OnDateSetListener() {
 
@@ -216,10 +239,6 @@ public class AddActionActivity extends AppCompatActivity {
         timePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar calendar = Calendar.getInstance();
-                calendar.setTime(editDiary.getDateCreate());
-                mHour = calendar.get(Calendar.HOUR_OF_DAY);
-                mMinute = calendar.get(Calendar.MINUTE);
                 TimePickerDialog timePicker = new TimePickerDialog(AddActionActivity.this,new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {

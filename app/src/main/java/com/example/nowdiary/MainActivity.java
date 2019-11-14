@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.nowdiary.Model.DiaryDetail;
+import com.example.nowdiary.Model.HistoryDetail;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setEvent() {
+
         signoutButton = findViewById(R.id.btn_signout);
         signoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_CODE_EDIT: {
                     Bundle bundle = data.getBundleExtra("package");
                     final DiaryDetail diary = (DiaryDetail)bundle.getSerializable("diary");
-                    Log.d("ITEMRESPONSE",diary.getContent());
                     dbReference.child("Diary").child(diary.getId()).setValue(diary).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -217,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     DiaryDetail tD = d.getValue(DiaryDetail.class);
+                    if(tD.getHistory()==null)
+                        tD.setHistory(new ArrayList<HistoryDetail>());
                     diaries.add(tD);
                 }
                 sortJournal(diaries);

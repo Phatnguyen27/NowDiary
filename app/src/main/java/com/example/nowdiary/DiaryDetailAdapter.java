@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 public class DiaryDetailAdapter extends RecyclerView.Adapter<DiaryDetailAdapter.ViewHolder> {
     private ArrayList<DiaryDetail> list;
     private Activity activity;
+    String time = "";
+    String shift = "";
     public DiaryDetailAdapter(ArrayList<DiaryDetail> list,Activity activity) {
         this.list = list;
         this.activity = activity;
@@ -46,10 +48,12 @@ public class DiaryDetailAdapter extends RecyclerView.Adapter<DiaryDetailAdapter.
         final DiaryDetail myListData = list.get(position);
         holder.background.getBackground().clearColorFilter();
         int color = myListData.getColor();
+        getTimeToShow(myListData.getDateCreate());
         holder.background.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        holder.tv_time.setText(getTimeToShow(myListData.getDateCreate()));
+        holder.tv_time.setText(time);
         holder.tv_miniContent.setText(myListData.getContent());
         holder.tv_dateCount.setText(DiaryDetail.countDate(myListData.getDateCreate()));
+        holder.tv_shift.setText(shift);
 //        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
 ////            @Override
 ////            public void onClick(View view) {
@@ -65,17 +69,17 @@ public class DiaryDetailAdapter extends RecyclerView.Adapter<DiaryDetailAdapter.
         return list.size();
     }
 
-    private String getTimeToShow(Date date) {
-        String time = "";
+    private void getTimeToShow(Date date) {
+        time = "";
+        shift = "";
         Calendar itemCal = Calendar.getInstance();
         itemCal.setTime(date);
         time += itemCal.get(Calendar.HOUR) + ":" + itemCal.get(Calendar.MINUTE);
         if (itemCal.get(Calendar.AM_PM) == Calendar.AM) {
-            time += "\nA.M";
+            shift += "\nA.M";
         } else {
-            time += "\nP.M";
+            shift += "\nP.M";
         }
-        return time;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

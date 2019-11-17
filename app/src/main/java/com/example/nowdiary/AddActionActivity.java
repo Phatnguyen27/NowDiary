@@ -191,7 +191,6 @@ public class AddActionActivity extends AppCompatActivity {
                                 @Override
                                 public void onDateSet(DatePicker view, int year,
                                                       int monthOfYear, int dayOfMonth) {
-                                    mEditTitle.append(" " + dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                                     Calendar calendar = Calendar.getInstance();
                                 }
                             }, mYear, mMonth, mDay);
